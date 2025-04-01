@@ -1,39 +1,82 @@
-import ProductItems from '@components/ui/ProductItems';
-import { Product } from '../../types/types';
-import { useEffect, useState } from 'react'
-import { getAllProducts } from '@src/api/product.api';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-
+import ProductItems from '@components/core/product-items/ProductItems';
+import { getAllProducts } from '@src/api/product.api';
+import { Product } from '../../types/types';
 
 const ProductList = () => {
-  const [productList, setProuctList] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const lastElementRef = useRef<HTMLLIElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const data = await getAllProducts();
-      setProuctList(data.products);
+      setProductList(data.products);
+      setLoading(false);
     };
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!lastElementRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const lastEntry = entries[0];
+        if (lastEntry.isIntersecting && !loading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(lastElementRef.current);
+    return () => observer.disconnect();
+  }, [productList.length, loading]);
+
+  const loadMore = async () => {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const moreProducts = await getAllProducts();
+    setProductList((prev) => [...prev, ...moreProducts.products]);
+    setLoading(false);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLUListElement>) => {
+    const target = event.target as HTMLElement;
+    const listItem = target.closest('li');
+    if (listItem && listItem.dataset.id) {
+      navigate(`/product/${listItem.dataset.id}`);
+    }
+  };
+
   return (
-    <Ul>{productList.map((item) => (
-      <Li key={item.id}>
-        <ProductItems product={item} />
-      </Li>
-    ))}
+    /* Need to use React Window to avoid max rendered list items in DOM */
+    <Ul onClick={handleClick}>
+      {productList.map((item, index) => (
+        <Li
+          key={item.id}
+          data-id={item.id}
+          ref={index === productList.length - 1 ? lastElementRef : null}
+        >
+          <ProductItems product={item} />
+        </Li>
+      ))}
+      {loading && <p>Loading...</p>}
     </Ul>
-  )
-}
+  );
+};
 
-export default ProductList
-
+export default ProductList;
 
 const Ul = styled.ul`
- list-style-type: none;
+  list-style-type: none;
 `;
 
 const Li = styled.li`
   margin-bottom: 1rem;
-`
+`;

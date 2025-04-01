@@ -10,6 +10,16 @@ export interface Product {
   category: string;
   thumbnail: string;
   images: string[];
+  tags: string[];
+  weight: number;
+  warrantyInformation: string;
+  reviews: {
+    rating: number;
+    comment: string;
+    date: Date;
+    reviewerName: string;
+    reviewerEmail: string;
+  }[]
 }
 
 export interface ProductsResponse {
