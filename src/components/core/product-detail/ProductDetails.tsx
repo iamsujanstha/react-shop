@@ -9,6 +9,7 @@ import { productStock } from "@src/utils/product-stock";
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product>();
   const [mainImage, setMainImage] = useState<string | undefined>(product?.thumbnail);
+  const [imageList, setImageList] = useState<string[]>([]);
 
   const { id } = useParams();
 
@@ -17,6 +18,7 @@ const ProductDetails = () => {
       try {
         const data = await getProductById(Number(id));
         setProduct(data);
+        setImageList(data?.images || []);
         setMainImage(data?.thumbnail);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -24,34 +26,34 @@ const ProductDetails = () => {
     })();
   }, [id]);
 
-  const { brand, price, category, rating, stock, title, description, images, reviews, weight, warrantyInformation, discountPercentage } = product || {};
+  const { brand, price, category, rating, stock, title, description, reviews, weight, warrantyInformation, discountPercentage } = product || {};
   const stockMessage = useMemo(() => productStock(stock || 0), [stock]);
 
   const handleThumbnailClick = (imageUrl: string) => () => {
     setMainImage(imageUrl);
   };
+
   const actualPrice = (price || 0) - ((price || 0) * (discountPercentage || 0) / 100);
-  const totalRatings = reviews?.reduce((acc, curr) => acc + curr.rating, 0);
+  const totalRatings = useMemo(() => reviews?.reduce((acc, curr) => acc + curr.rating, 0), [reviews]);
 
   return (
     <Styled.ProductContainer>
       <Styled.ThumbnailContainer>
-        {images &&
-          images.map((img, index) => (
-            <Styled.SmallThumbnail
-              key={index}
-              src={img}
-              alt={`Thumbnail ${index + 1}`}
-              onClick={handleThumbnailClick(img)}
-              style={{
-                cursor: 'pointer',
-                width: '80px',
-                height: '80px',
-                marginBottom: '5px',
-                border: mainImage === img ? '2px solid blue' : '1px solid #ccc',
-              }}
-            />
-          ))}
+        {imageList.map((img, index) => (
+          <Styled.SmallThumbnail
+            key={index}
+            src={img}
+            alt={`Thumbnail ${index + 1}`}
+            onClick={handleThumbnailClick(img)}
+            style={{
+              cursor: 'pointer',
+              width: '80px',
+              height: '80px',
+              marginBottom: '5px',
+              border: mainImage === img ? '2px solid blue' : '1px solid #ccc',
+            }}
+          />
+        ))}
       </Styled.ThumbnailContainer>
       <Styled.Thumbnail
         src={mainImage || "/fallback-image.jpg"}

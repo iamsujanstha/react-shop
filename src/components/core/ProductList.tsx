@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ProductItems from '@components/core/product-items/ProductItems';
 import { getAllProducts } from '@src/api/product.api';
 import { Product } from '../../types/types';
+import Loader from '@components/ui/Loader';
 
 const ProductList = () => {
   const [productList, setProductList] = useState<Product[]>([]);
@@ -56,18 +57,20 @@ const ProductList = () => {
 
   return (
     /* Need to use React Window to avoid max rendered list items in DOM */
-    <Ul onClick={handleClick}>
-      {productList.map((item, index) => (
-        <Li
-          key={item.id}
-          data-id={item.id}
-          ref={index === productList.length - 1 ? lastElementRef : null}
-        >
-          <ProductItems product={item} />
-        </Li>
-      ))}
-      {loading && <p>Loading...</p>}
-    </Ul>
+    <>
+      <Ul onClick={handleClick}>
+        {productList.map((item, index) => (
+          <Li
+            key={item.id}
+            data-id={item.id}
+            ref={index === productList.length - 1 ? lastElementRef : null}
+          >
+            <ProductItems product={item} />
+          </Li>
+        ))}
+      </Ul>
+      {loading && <LoaderContainer><Loader /></LoaderContainer>}
+    </>
   );
 };
 
@@ -80,3 +83,7 @@ const Ul = styled.ul`
 const Li = styled.li`
   margin-bottom: 1rem;
 `;
+
+const LoaderContainer = styled.div`
+  text-align: center;
+`
