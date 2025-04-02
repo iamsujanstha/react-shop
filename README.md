@@ -1,54 +1,91 @@
-# React + TypeScript + Vite
+# React Vite Project with JSONPlaceholder API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+This project is a React application bootstrapped with Vite. It fetches data from the [JSONPlaceholder API](https://jsonplaceholder.typicode.com/) and displays it dynamically. The project now includes an **infinite scrolling** feature implemented using the **Intersection Observer API**.
 
-Currently, two official plugins are available:
+## Features
+- **React with Vite** for fast development and build performance.
+- **Fetch and display data** from JSONPlaceholder API.
+- **Infinite Scrolling** using Intersection Observer for seamless content loading.
+- **Optimized performance** with lazy loading and API pagination.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
 
-## Expanding the ESLint configuration
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/iamsujanstha/react-shop.git
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. Navigate to the project directory:
+   ```sh
+   cd react-shop
+   ```
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+3. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+4. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+## Usage
+- Open `http://localhost:5173/` in your browser.
+- Scroll down to the bottom to trigger the infinite scroll.
+- More data will be loaded dynamically as you reach the bottom.
+
+## Implementation Details
+
+The infinite scrolling is achieved using the **Intersection Observer API**. When the user scrolls near the bottom of the page, a new set of data is fetched from the JSONPlaceholder API.
+
+Example code snippet:
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+
+const InfiniteScrollComponent = () => {
+    const [items, setItems] = useState([]);
+    const [page, setPage] = useState(1);
+    const observerRef = useRef(null);
+
+    useEffect(() => {
+        fetch(`https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=10`)
+            .then((response) => response.json())
+            .then((newItems) => setItems((prevItems) => [...prevItems, ...newItems]));
+    }, [page]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                setPage((prevPage) => prevPage + 1);
+            }
+        });
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div>
+            {items.map((item) => (
+                <div key={item.id}>{item.title}</div>
+            ))}
+            <div ref={observerRef} style={{ height: 20, background: "transparent" }}></div>
+        </div>
+    );
+};
+
+export default InfiniteScrollComponent;
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Contributions
+Feel free to fork and submit pull requests to improve the project!
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## License
+This project is licensed under the MIT License.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```

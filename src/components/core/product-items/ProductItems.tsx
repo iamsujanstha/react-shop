@@ -25,7 +25,7 @@ const ProductItems: React.FC<IProductItemsProps> = ({ product }) => {
         <Styled.Price>
           <span className="discounted">${actualPrice.toFixed(2)}</span>
           <span className="original">${price}</span>
-          <span className="discountedPer">{discountPercentage}%</span>
+          <span className="discountedPer">{discountPercentage}% off</span>
         </Styled.Price>
         <Styled.Rating>⭐ {rating} / 5</Styled.Rating>
         <Styled.Stock stock={stock}>{stockMessage}</Styled.Stock>
