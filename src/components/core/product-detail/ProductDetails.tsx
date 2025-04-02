@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductById } from "@src/api/product.api";
 import { Product } from "../../../types/types";
 import Styled from "./styles";
-import Rating from "@components/ui/Rating";
-import { productStock } from "@src/utils/product-stock";
+import { getProductById } from "../../../api/product.api";
+import { productStock } from "../../../utils/product-stock";
+import Rating from "../../ui/Rating";
+
+
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product>();

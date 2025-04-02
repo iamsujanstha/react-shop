@@ -1,5 +1,5 @@
-import ProductList from "@components/core/ProductList";
 import styled from "styled-components";
+import ProductList from "../core/ProductList";
 
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

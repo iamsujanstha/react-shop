@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ProductItems from '@components/core/product-items/ProductItems';
-import { getAllProducts } from '@src/api/product.api';
+import { getAllProducts } from '../../api/product.api';
 import { Product } from '../../types/types';
-import Loader from '@components/ui/Loader';
+import ProductItems from './product-items/ProductItems';
+import Loader from '../ui/Loader';
+
 
 const ProductList = () => {
   const [productList, setProductList] = useState<Product[]>([]);

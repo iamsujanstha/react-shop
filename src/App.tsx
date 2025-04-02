@@ -1,9 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ProductDetails from '@components/core/product-detail/ProductDetails';
-import { Layout } from '@components/layouts/MainLayout';
 import './app.css';
-
+import { Layout } from './components/layouts/MainLayout';
+import ProductDetails from './components/core/product-detail/ProductDetails';
 
 const App: React.FC = () => {
 

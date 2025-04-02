@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { Styled } from '@components/core/product-items/styles';
 import { Product } from '../../../types/types';
-import { productStock } from '@src/utils/product-stock';
+import { productStock } from '../../../utils/product-stock';
+import { Styled } from './styles';
+
+
 
 interface IProductItemsProps {
   product: Product;
