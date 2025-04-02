@@ -4,7 +4,7 @@ const Styled = {
   ProductContainer: styled.div`
     display: flex;
     padding: 2rem;
-    margin: 4rem;
+    margin: 1rem;
     background: #fff;
   `,
 
@@ -66,7 +66,6 @@ const Styled = {
   ThumbnailContainer: styled.div`
     display: flex;
     flex-direction: column;
-    margin-right: 15px;
   `,
 
   SmallThumbnail: styled.img`

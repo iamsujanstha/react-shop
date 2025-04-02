@@ -45,6 +45,7 @@ const ProductDetails = () => {
             src={img}
             alt={`Thumbnail ${index + 1}`}
             onClick={handleThumbnailClick(img)}
+            onMouseEnter={handleThumbnailClick(img)}
             style={{
               cursor: 'pointer',
               width: '80px',
